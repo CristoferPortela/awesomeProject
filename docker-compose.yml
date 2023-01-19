@@ -1,0 +1,15 @@
+version: '3.0'
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+  go:
+    build: .
+    ports:
+      - "1323:1323"

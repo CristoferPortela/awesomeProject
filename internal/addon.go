@@ -2,6 +2,7 @@ package internal
 
 import (
 	"awesomeProject/pkg"
+	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"log"
@@ -23,30 +24,48 @@ type Export struct {
 	//Routes []RouteFunc
 }
 
+func (e *Export) Named() string {
+	return "oi"
+}
+
 func ConfigureAddons() Addon {
 
 	routes := Routes
 
 	for _, addon := range pkg.GetAddons() {
 		fmt.Println(addon)
-		plug, err := plugin.Open(fmt.Sprintf("addon/%s/main.so", addon))
+		path := fmt.Sprintf("addon/%s/main.so", addon)
+		plug, err := plugin.Open(path)
 
 		if err != nil {
 			fmt.Println(err)
-			log.Fatal("Error when getting plugins")
+			log.Fatal(fmt.Sprintf("Error when getting plugin %s", addon))
 		}
 		symbol, err := plug.Lookup("Exporting")
 		if err != nil {
 			fmt.Println(err)
-			log.Fatal("Error when looking up the plugins")
+			log.Fatal(fmt.Sprintf("Error when looking up the plugin %s", addon))
+		}
+		var exported func() interface{}
+		var ok bool
+
+		exported, ok = symbol.(func() interface{})
+		if !ok {
+			log.Fatal(fmt.Sprintf("Error on getting exported values for %s", addon))
+		}
+		a := exported()
+		stuf, err := json.Marshal(a)
+
+		x := map[string]string{}
+
+		err = json.Unmarshal([]byte(stuf), &x)
+
+		if err != nil {
+			fmt.Println(err)
 		}
 
-		var exported Export
-		exported, ok := symbol.(Export)
-		if !ok {
-			log.Fatal("Error on getting exported value")
-		}
-		fmt.Println(exported)
+		fmt.Println(string(stuf), x["Name"])
+
 	}
 	return Addon{
 		Routes: routes,

@@ -10,23 +10,26 @@ import (
 )
 
 const (
-	host     = "localhost"
+	host     = "db"
 	port     = 5432
 	user     = "postgres"
 	password = "postgres"
 	dbname   = "postgres"
 )
 
-func Connection() *gorm.DB {
+func Connection() (*gorm.DB, error) {
+
 	conn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	fmt.Println(conn)
 	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("Database error")
+		return nil, err
 	}
 	if err := db.AutoMigrate(&model.User{}, &model.Setting{}); err != nil {
 		log.Fatal("Auto migration error")
 	}
 
-	return db
+	return db, nil
 }

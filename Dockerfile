@@ -1,13 +1,9 @@
 FROM golang:1.19
 
 WORKDIR /go/src/awe
-ADD . /go/src/awe
-WORKDIR /go/src/awe
-
+COPY . .
 
 RUN go mod download
-RUN go mod tidy
-RUN #go build -buildmode=plugin
 
 RUN for file in ./addon/*; \
     do \
@@ -21,7 +17,7 @@ RUN for file in ./addon/*; \
 
 RUN go build
 
-RUN go run .
+CMD ["./wait-for-it.sh", "0.0.0.0:5432", "--timeout=2", "--", "go", "run", "."]
 
-ENTRYPOINT ["tail"]
-CMD ["-f","/dev/null"]
+#ENTRYPOINT "tail"
+#CMD ["tail", "-f", "/dev/null"]

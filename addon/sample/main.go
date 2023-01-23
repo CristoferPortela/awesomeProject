@@ -1,14 +1,18 @@
 package main
 
+import "fmt"
+
 //import "github.com/labstack/echo/v4"
 
-type RouteFunc func()
+func main() {
+	fmt.Println(Exporting())
+}
 
 type Export struct {
 	Name string
 	//Routes []RouteFunc
 }
 
-var Exporting = Export{
-	Name: "Market",
+func Exporting() interface{} {
+	return &Export{}
 }

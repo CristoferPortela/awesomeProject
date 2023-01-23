@@ -6,12 +6,17 @@ import (
 	"awesomeProject/server/contexts"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"log"
 )
 
 func Router(e *echo.Echo) {
 	addons := internal.ConfigureAddons()
 
-	db := internal.Connection()
+	db, err := internal.Connection()
+
+	if err != nil {
+		log.Fatal("Couldn't initialize db")
+	}
 
 	// Defining configuration context
 	var apiType model.Setting

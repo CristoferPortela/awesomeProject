@@ -5,12 +5,17 @@ import (
 	"awesomeProject/model"
 	"awesomeProject/pkg"
 	"gorm.io/gorm"
+	"log"
 )
 
 func InitializeDB(connOptional ...*gorm.DB) {
 	var conn *gorm.DB
+	var err error
 	if len(connOptional) == 0 {
-		conn = internal.Connection()
+		conn, err = internal.Connection()
+		if err != nil {
+			log.Fatal("Couldn't initialize db")
+		}
 	} else {
 		conn = connOptional[0]
 	}

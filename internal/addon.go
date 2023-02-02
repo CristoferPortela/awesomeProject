@@ -16,7 +16,7 @@ type Addon struct {
 }
 
 var (
-	Routes []RouteFunc
+	Routes = []RouteFunc{}
 )
 
 type Export struct {
@@ -39,7 +39,8 @@ func ConfigureAddons() Addon {
 
 		if err != nil {
 			fmt.Println(err)
-			log.Fatal(fmt.Sprintf("Error when getting plugin %s", addon))
+			fmt.Println(fmt.Sprintf("Error when getting plugin %s", addon))
+			break
 		}
 		symbol, err := plug.Lookup("Exporting")
 		if err != nil {

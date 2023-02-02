@@ -11,5 +11,8 @@ services:
       POSTGRES_DB: postgres
   go:
     build: .
+    volumes:
+      - ".:/go/src"
     ports:
       - "1323:1323"
+      

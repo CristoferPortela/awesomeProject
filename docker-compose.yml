@@ -15,4 +15,3 @@ services:
       - ".:/go/src"
     ports:
       - "1323:1323"
-      
